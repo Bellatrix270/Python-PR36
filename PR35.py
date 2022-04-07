@@ -1,8 +1,12 @@
+from pydoc import text
 from tokenize import Name
 from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 from kivymd.app import MDApp
 from kivymd.uix.button import MDFloatingActionButtonSpeedDial
+from kivymd.uix.dialog import MDDialog
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.core.window import Window
 Window.size = (500, 500)
 
@@ -59,6 +63,14 @@ class Example(MDApp):
     def build(self):
         return Builder.load_string(KV)
 
+    def show_dialog(self):
+        if not self.dialog:
+            self.dialog = MDDialog(
+                title="Create new group",
+                type="custom",
+                auto_dismiss=False,)
+        self.dialog.open()
+
     def clickRegButton(self, textBoxlogin, textBoxPass):
         file = open("UserData.txt", 'w')
         file.write("Login:" + textBoxlogin.text + "\n")
@@ -68,7 +80,12 @@ class Example(MDApp):
     def clickSignUpButton(self, textBoxlogin, textBoxPass):
         if len(textBoxlogin.text) == 0 and len(textBoxPass.text) == 0:
             return
-            
+
+        popup = Popup(title='Authorization',
+                    size_hint=(None, None), 
+                    size=(150, 100), 
+                    auto_dismiss=True)
+
         file = open("UserData.txt", 'r')
         UsersData = [line.strip().replace("Login:","").replace("Password:","") for line in file]
 
@@ -76,9 +93,13 @@ class Example(MDApp):
             if (i % 2 != 0) : continue
 
             if UsersData[i] == textBoxlogin.text and UsersData[i + 1] == textBoxPass.text:
-                print("Good")
+                popup.content = Label(text = 'Successfully')
+                popup.open()
+                return
 
         file.close()
+        popup.content = Label(text = 'User not found')
+        popup.open()
 
 
 Example().run()
