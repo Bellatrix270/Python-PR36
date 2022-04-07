@@ -3,6 +3,8 @@ from kivy.lang import Builder
 from kivymd.uix.screen import MDScreen
 from kivymd.app import MDApp
 from kivymd.uix.button import MDFloatingActionButtonSpeedDial
+from kivy.core.window import Window
+Window.size = (500, 500)
 
 KV = '''
 MDBoxLayout:
@@ -46,11 +48,6 @@ MDBoxLayout:
         bg_hint_color: app.theme_cls.primary_light
 '''
 
-class User():
-    Login = ""
-    Passwrod = ""
-
-
 class Example(MDApp):
     data = {
         'Python': 'language-python',
@@ -69,14 +66,14 @@ class Example(MDApp):
         file.close()
 
     def clickSignUpButton(self, textBoxlogin, textBoxPass):
+        if len(textBoxlogin.text) == 0 and len(textBoxPass.text) == 0:
+            return
+            
         file = open("UserData.txt", 'r')
         UsersData = [line.strip().replace("Login:","").replace("Password:","") for line in file]
 
         for i in range(len(UsersData)):
             if (i % 2 != 0) : continue
-
-            print(UsersData[i], textBoxlogin.text)
-            print(UsersData[i + 1], textBoxPass.text)
 
             if UsersData[i] == textBoxlogin.text and UsersData[i + 1] == textBoxPass.text:
                 print("Good")
